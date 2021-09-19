@@ -1,25 +1,42 @@
 <template>
   <div class="article-list">
-    <van-list
-      v-model="loading"
-      :finished="finished"
-      finished-text="没有更多了"
-      @load="onLoad"
+    <van-pull-refresh
+      v-model="refreshing"
+      @refresh="onRefresh"
+      :success-text="isPullRefresh"
+      success-duration="800"
     >
-      <van-cell
-        v-for="(item, index) in articles"
-        :key="index"
-        :title="item.title"
-      />
-    </van-list>
+      <van-list
+        v-model="loading"
+        :finished="finished"
+        finished-text="没有更多了"
+        @load="onLoad"
+      >
+        <!-- <van-cell
+          v-for="(item, index) in articles"
+          :key="index"
+          :title="item.title"
+        /> -->
+        <article-item
+          v-for="(item, index) in articles"
+          :key="index"
+          :item="item"
+        ></article-item>
+      </van-list>
+    </van-pull-refresh>
   </div>
 </template>
 
 <script>
 import { getArticles } from "@/api/article";
 
+import ArticleItem from "@/components/index";
+
 export default {
   name: "ArticleList",
+  components: {
+    ArticleItem,
+  },
   props: {
     channel: {
       type: Object,
@@ -33,6 +50,8 @@ export default {
       loading: false, // 控制加载中的 loading 状态
       finished: false, // 控制加载结束的状态，当加载结束，不在触发加载更多
       timestamp: null, // 获取下一页数据的时间戳
+      refreshing: false, //下拉刷新的 loading 状态
+      isPullRefresh: "",
     };
   },
   methods: {
@@ -43,7 +62,6 @@ export default {
         timestamp: this.timestamp || Date.now(),
         with_top: 1,
       });
-      console.log(data);
 
       // 2.把数据放到 list 数组中
       const { results } = data.data;
@@ -58,6 +76,25 @@ export default {
       } else {
         this.finished = true; // 没有数据了
       }
+    },
+    async onRefresh() {
+      // 下拉刷新，组件自己就会展示 loading 状态
+      // 1.请求获取数据
+      const { data } = await getArticles({
+        channel_id: this.channel.id, //频道 id
+        timestamp: this.timestamp || Date.now(),
+        with_top: 1,
+      });
+
+      // 2.把数据放到数据列表中（往顶部追加）
+      const results = data.data.results;
+      this.articles.unshift(...results);
+
+      // 3.关闭刷新的状态 loading
+      this.refreshing = false;
+
+      // 加载成功
+      this.isPullRefresh = `更新了${results.length}条数据`;
     },
   },
 };
