@@ -6,7 +6,10 @@
       finished-text="没有更多了"
       @load="onLoad"
     >
-      <van-cell v-for="(article, index) in list" :key="index" :title="article.title" />
+      <van-cell 
+      v-for="(article, index) in list" 
+      :key="index" 
+      :title="article.title" />
     </van-list>
   </div>
 </template>
@@ -40,7 +43,6 @@ export default {
         q: this.searchText // 搜索的字符
       })
 
-      console.log(data);
       // 2.将数据放到数据列表中
       const { results } = data.data
       this.list.push(...results)

@@ -9,7 +9,8 @@ import request from '@/utils/request'
 export const login = data => {
   return request({
     method: 'POST',
-    url: '/mp/v1_0/authorizations',
+    url: '/v1_0/authorizations',
+    // url: '/mp/v1_0/authorizations',
     data
   })
 }
@@ -20,7 +21,8 @@ export const login = data => {
 export const sendSms = mobile => {
   return request({
     method: 'GET',
-    url: `/mp/v1_0/captchas/${mobile}`,
+    url: `/v1_0/sms/codes/${mobile}`,
+    // url: `/mp/v1_0/captchas/${mobile}`,
   })
 }
 
@@ -30,7 +32,7 @@ export const sendSms = mobile => {
 export const getCurrentUser = () => {
   return request({
     method: 'GET',
-    url: '/app/v1_0/user',
+    url: '/v1_0/user',
     // headers: {
     //   Authorization: `Bearer ${store.state.user.token}`
     // }
@@ -43,7 +45,7 @@ export const getCurrentUser = () => {
  export const getUserChannels = () => {
   return request({
     method: 'GET',
-    url: '/app/v1_0/user/channels',
+    url: '/v1_0/user/channels',
   })
 }
 
@@ -53,7 +55,7 @@ export const getCurrentUser = () => {
  export const addFollow = userId => {
   return request({
     method: 'POST',
-    url: '/app/v1_0/user/followings',
+    url: '/v1_0/user/followings',
     data: {
       target: userId
     }
@@ -66,6 +68,38 @@ export const getCurrentUser = () => {
  export const deleteFollow = userId => {
   return request({
     method: 'DELETE',
-    url: `/app/v1_0/user/followings/${userId}`,
+    url: `/v1_0/user/followings/${userId}`,
+  })
+}
+
+/**
+ * 获取用户个人资料
+ */
+ export const getUserProfile = (target) => {
+  return request({
+    method: 'GET',
+    url: '/v1_0/user/profile',
+  })
+}
+
+/**
+ * 修改用户个人资料
+ */
+ export const updateUserProfile = data => {
+  return request({
+    method: 'PATCH',
+    url: '/v1_0/user/profile',
+    data
+  })
+}
+
+/**
+ * 修改用户头像
+ */
+ export const updateUserPhoto = data => {
+  return request({
+    method: 'PATCH',
+    url: '/v1_0/user/photo',
+    data
   })
 }

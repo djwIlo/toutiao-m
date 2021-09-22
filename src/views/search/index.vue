@@ -44,7 +44,7 @@
 <script>
 import SearchSuggestion from "./components/search-suggestion";
 import SearchHistory from "./components/search-history";
-import SearchResult from "./components/search-result.vue";
+import SearchResult from "./components/search-result";
 import { setItem, getItem } from "@/utils/storage";
 import { getSearchHistorys } from "@/api/search";
 import { mapState } from "vuex";
@@ -91,7 +91,7 @@ export default {
 
       // 如果用户已登录，则把搜索历史记录存储到线上
       // 如果用户未登录，则把搜索历史记录存储到本地
-      setItem("search-historys", this.searchHistorys);
+      // setItem("search-historys", this.searchHistorys);
 
       // 展示搜索结果
       this.isResultShow = true;
@@ -107,10 +107,6 @@ export default {
         ];
       }
       this.searchHistorys = searchHistories;
-    },
-
-    onCancel() {
-      console.log("onCancel");
     },
   },
 };

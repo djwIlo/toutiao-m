@@ -8,6 +8,7 @@
           但是任何prop数据都不能重新赋值：xxx=xxx 如果你想要让prop数据=
           新的数据：让父组件自己修改 -->
           <span @click="$emit('updata-histories', [])">全部删除</span>
+          &nbsp;&nbsp;
           <span @click="isDeleteShow = false">完成</span>
         </div>
         <van-icon v-else name="delete" @click="isDeleteShow = true" />
@@ -19,14 +20,15 @@
         icon="search"
         @click="onDelete(history, index)"
       >
-        <van-icon name="close" v-show="isDeleteShow" />
+        <van-icon name="close" 
+          v-show="isDeleteShow" />
       </van-cell>
     </van-cell-group>
   </div>
 </template>
 
 <script>
-import { setItme } from "@/utils/storage";
+// import { setItme } from "@/utils/storage";
 
 export default {
   name: "SearchHistory",
@@ -54,7 +56,7 @@ export default {
         // 如果已登录，则删除线上的历史数据
         // 没有删除单个历史记录的接口
         // 只有删除所有历史数据的接口
-        setItme("search-historys", this.searchHistorys);
+        // setItme("search-historys", this.searchHistorys);
         return;
       }
 

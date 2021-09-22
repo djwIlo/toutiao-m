@@ -44,6 +44,7 @@ export default {
         // 请求获取数据
         // 模板绑定展示
         const { data } = await getSearchSuggestions(this.searchText);
+        console.log(data);
         this.suggestions = data.data.options;
       }, 200),
       // async handler() {

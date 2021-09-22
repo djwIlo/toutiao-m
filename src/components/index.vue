@@ -5,7 +5,7 @@
     :to="{
       name: 'article',
       params: {
-        articleId: item.id,
+        articleId: item.art_id,
       },
     }"
   >
@@ -21,16 +21,14 @@
         >
           <van-image
             class="cover-item"
-            width="116"
-            height="73"
             fit="cover"
             :src="img"
           />
         </div>
       </div>
       <div class="label-wrap">
-        <span>{{ authors }}</span>
-        <span>{{ item.cover.type }}评论</span>
+        <span>{{ item.aut_name }}</span>
+        <span>{{ item.comm_count }}评论</span>
         <span>{{ item.pubdate | relativeTiem }}</span>
       </div>
     </div>
@@ -52,16 +50,6 @@ export default {
       type: Object,
       required: true,
       default: {},
-    },
-  },
-  data() {
-    return {
-      author: ["焰灵姬", "美杜莎", "故辞", "Gwendolyn", "Leilani", "Lydia"],
-    };
-  },
-  computed: {
-    authors() {
-      return this.author[Math.floor(Math.random() * this.author.length)];
     },
   },
 };

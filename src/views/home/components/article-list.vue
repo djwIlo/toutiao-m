@@ -1,5 +1,5 @@
 <template>
-  <div class="article-list">
+  <div class="article-list" ref="article-list">
     <van-pull-refresh
       v-model="refreshing"
       @refresh="onRefresh"
@@ -29,8 +29,8 @@
 
 <script>
 import { getArticles } from "@/api/article";
-
 import ArticleItem from "@/components/index";
+import { debounce } from "lodash";
 
 export default {
   name: "ArticleList",
@@ -52,8 +52,23 @@ export default {
       timestamp: null, // 获取下一页数据的时间戳
       refreshing: false, //下拉刷新的 loading 状态
       isPullRefresh: "",
+      scrollTop: 0, // 文章位置
     };
   },
+  mounted() {
+    const articleList = this.$refs["article-list"];
+    articleList.onscroll = debounce(() => {
+      this.scrollTop = articleList.scrollTop;
+      // console.log(this.scrollTop);
+    }, 50);
+  },
+  activated() {
+    // 把记录的位置设置回来
+    this.$refs["article-list"].scrollTop = this.scrollTop;
+  },
+  // deactivated() {
+  //   this.scrollTop = this.$refs["article-list"].scrollTop;
+  // },
   methods: {
     async onLoad() {
       // 1. 请求获取数据

@@ -5,7 +5,7 @@
       slot="icon"
       round
       fit="cover"
-      src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fhbimg.huabanimg.com%2F382b1f0cb62f9223375027067fd3ba94e9489eb3983ca-aVrdrT_fw658&refer=http%3A%2F%2Fhbimg.huabanimg.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1634647933&t=22038a87c220c2c79fe4542e1fea7297"
+      :src="comment.aut_photo"
     />
     <div slot="title">
       <div class="title-wrap" @click="onCommentLike">
@@ -24,7 +24,11 @@
         <span class="pubdate"
           >{{ comment.pubdate | dateTime("MM-DD HH:mm") }}·</span
         >
-        <van-button class="reply-btn" size="mini" round
+        <van-button
+          class="reply-btn"
+          size="mini"
+          round
+          @click="$emit('reply-click', comment)"
           >{{ comment.reply_count }} 回复</van-button
         >
       </div>
@@ -48,15 +52,15 @@ export default {
       if (this.comment.is_liking) {
         // 以点赞，取消点赞
         await deleteCommentLike(commentId);
-        this.comment.like_count--
+        this.comment.like_count--;
       } else {
         // 未点赞，添加点赞
-        await addCommentLike(commentId)
-        this.comment.like_count++
+        await addCommentLike(commentId);
+        this.comment.like_count++;
       }
 
       // 更新视图
-      this.comment.is_liking = !this.comment.is_liking
+      this.comment.is_liking = !this.comment.is_liking;
     },
   },
 };

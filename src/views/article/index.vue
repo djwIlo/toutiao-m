@@ -16,7 +16,7 @@
           slot="icon"
           fit="cover"
           round
-          src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.mp.itc.cn%2Fupload%2F20170728%2Fe383210f7fe549ad9635f6927dfe1d76_th.jpg&refer=http%3A%2F%2Fimg.mp.itc.cn&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1634614279&t=614a02fff7c4702da3594dd8d35e3f3b"
+          :src="article.aut_photo"
         />
         <div slot="label" class="pubdate">
           {{ article.pubdate | relativeTiem }}
@@ -39,7 +39,12 @@
       ></div>
 
       <!-- 文章评论列表 -->
-      <comment-list :source="articleId"></comment-list>
+      <comment-list
+        :source="articleId"
+        :list="commentList"
+        @update-total-count="totalCommentCount = $event"
+        @reply-click="onReplyClick"
+      ></comment-list>
       <!-- 文章评论列表 -->
     </div>
 
@@ -54,7 +59,7 @@
       >
         写评论
       </van-button>
-      <van-icon name="comment-o" info="125" />
+      <van-icon name="comment-o" :info="totalCommentCount" />
       <van-icon
         :name="article.is_collected ? 'star' : 'star-o'"
         :color="article.is_collected ? 'orange' : '#777'"
@@ -71,9 +76,21 @@
 
     <!-- 发布评论 -->
     <van-popup v-model="isPostShow" position="bottom">
-      <post-comment :target="articleId" />
+      <post-comment :target="articleId" @post-success="onPostSuccess" />
     </van-popup>
     <!-- /发布评论 -->
+
+    <!-- 评论回复 -->
+    <van-popup v-model="isReplyShow" position="bottom">
+      <!-- 这里使用 v-if 的目的是为了销毁组件防止组件懒加载，不重新加赞数据，页面数据没变化 -->
+      <comment-reply
+        v-if="isReplyShow"
+        :comment="replyComment"
+        :article-id="articleId"
+        @close="isReplyShow = false"
+      />
+    </van-popup>
+    <!-- /评论回复 -->
   </div>
 </template>
 
@@ -89,7 +106,8 @@ import {
 import { ImagePreview } from "vant";
 import { addFollow, deleteFollow } from "@/api/user";
 import CommentList from "./components/comment-list";
-import PostComment from './components/post-comment'
+import PostComment from "./components/post-comment";
+import CommentReply from "./components/comment-reply";
 
 // 在组件中获取动态路由参数：
 // 方式一：this.$route.params.articleId
@@ -99,7 +117,8 @@ export default {
   name: "ArticleIndex",
   components: {
     CommentList,
-    PostComment
+    PostComment,
+    CommentReply,
   },
   props: {
     articleId: {
@@ -113,6 +132,10 @@ export default {
       isFollowLoading: false, // 关注用户按钮 loading 状态
       isCollectLoading: false, // 点赞的 loading 状态
       isPostShow: false, // 控制发布评论的显示状态
+      commentList: [], // 文章评论列表
+      totalCommentCount: 0, // 评论总数量
+      isReplyShow: false, // 控制回复的显示状态
+      replyComment: {}, // 当前回复评论对象
     };
   },
   created() {
@@ -200,6 +223,26 @@ export default {
       this.$toast.success(
         `${this.article.attitude === 1 ? "点赞成功" : "取消点赞"}`
       );
+    },
+
+    onPostSuccess(comment) {
+      console.log(comment);
+      // 把发布成功的评论数据对象放到评论列表顶部
+      this.commentList.unshift(comment);
+
+      // 更新评论的总数量
+      this.totalCommentCount++;
+
+      // 关闭发布评论弹出层
+      this.isPostShow = false;
+    },
+
+    onReplyClick(comment) {
+      console.log("onReplyClick", comment);
+      this.replyComment = comment;
+
+      // 展示回复内容
+      this.isReplyShow = true;
     },
   },
 };

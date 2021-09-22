@@ -1,7 +1,7 @@
 <template>
   <div class="post-comment">
     <van-field
-      v-model="message"
+      v-model.trim="message"
       rows="2"
       autosize
       type="textarea"
@@ -9,7 +9,12 @@
       placeholder="请输入评论"
       show-word-limit
     />
-    <van-button class="to-btn" size="mini" round @click="onPost"
+    <van-button
+      class="to-btn"
+      size="mini"
+      round
+      @click="onPost"
+      :disabled="!message"
       >发布</van-button
     >
   </div>
@@ -17,6 +22,7 @@
 
 <script>
 import { addComment } from "@/api/comment";
+
 export default {
   name: "PostComment",
   props: {
@@ -38,6 +44,11 @@ export default {
   },
   methods: {
     async onPost() {
+      this.$toast.loading({
+        message: "发布中...",
+        forbidClick: true, // 禁止背景点击
+      });
+
       // 找到数据接口
       // 封装请求方法
       // 请求提交数据
@@ -46,8 +57,14 @@ export default {
         content: this.message, // 评论的内容
         art_id: this.articleId ? this.articleId.toString() : null,
       });
+
+      this.$emit("post-success", data.data.new_obj);
+
       // 处理响应结果
-      console.log(data);
+      this.$toast.success(`发布成功`);
+
+      // 发布成功：清空文本框内容
+      this.message = "";
     },
   },
 };

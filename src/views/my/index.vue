@@ -15,9 +15,10 @@
           fit="cover"
           :src="currentUser.photo"
         />
-        <!-- https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fc-ssl.duitang.com%2Fuploads%2Fitem%2F201906%2F20%2F20190620151742_djaxu.jpg&refer=http%3A%2F%2Fc-ssl.duitang.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1634145522&t=47ee1b58fddb190886d18f05a455cf81 -->
-        <div class="name" slot="title">{{currentUser.name}}</div>
-        <van-button class="update-btn" round size="mini">编辑资料</van-button>
+        <div class="name" slot="title">{{ currentUser.name }}</div>
+        <van-button class="update-btn" round size="mini" to="/user/profile"
+          >编辑资料</van-button
+        >
       </van-cell>
       <van-grid :border="false">
         <van-grid-item class="data-info-item">
@@ -47,7 +48,12 @@
       </van-grid>
     </van-cell-group>
 
-    <div v-else class="not-login" @click="$router.push('./login')">
+    <div v-else class="not-login" @click="$router.push({
+      name: 'login',
+      query: {
+        redirect: '/my'
+      }
+    })">
       <van-image
         slot="icon"
         round
@@ -72,7 +78,7 @@
       />
     </van-grid>
     <van-cell title="消息通知" is-link to="/" />
-    <van-cell class="mb-4" title="小智同学" is-link to="/" />
+    <van-cell class="mb-4" title="小智同学" is-link to="/user/chat" />
     <van-cell
       v-if="user"
       class="logout-cell"
@@ -84,41 +90,44 @@
 
 <script>
 import { mapState } from "vuex";
-import { getCurrentUser } from '@/api/user'
+import { getCurrentUser } from "@/api/user";
 
 export default {
   name: "MyIndex",
-  data () {
+  data() {
     return {
-      currentUser: {} // 当前登录用户信息
-    }
+      currentUser: {}, // 当前登录用户信息
+    };
   },
   computed: {
     ...mapState(["user"]),
   },
-  created () {
-    this.loadCurrentUser()
+  created() {
+    this.loadCurrentUser();
   },
   methods: {
     onLogout() {
       // 提示用户确认退出
       // 确认 -> 处理推出
-      this.$dialog.confirm({
-        title: "推出提示",
-        message: "确认退出吗",
-      })
-        .then(() => { // 确认执行这里
-          // on confirm
-        this.$store.commit('setUser', null)
+      this.$dialog
+        .confirm({
+          title: "推出提示",
+          message: "确认退出吗",
         })
-        .catch(() => { //取消执行这里
+        .then(() => {
+          // 确认执行这里
+          // on confirm
+          this.$store.commit("setUser", null);
+        })
+        .catch(() => {
+          //取消执行这里
           // on cancel
         });
     },
-    async loadCurrentUser () {
-      const { data } = await getCurrentUser()
-      this.currentUser = data.data
-    }
+    async loadCurrentUser() {
+      const { data } = await getCurrentUser();
+      this.currentUser = data.data;
+    },
   },
 };
 </script>

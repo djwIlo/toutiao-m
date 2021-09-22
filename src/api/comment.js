@@ -9,7 +9,7 @@ import request from '@/utils/request'
 export const getComments = params => {
   return request({
     method: 'GET',
-    url: '/app/v1_0/comments',
+    url: '/v1_0/comments',
     params
   })
 }
@@ -20,7 +20,7 @@ export const getComments = params => {
  export const addCommentLike = commentId => {
   return request({
     method: 'POST',
-    url: '/app/v1_0/comment/likings',
+    url: '/v1_0/comment/likings',
     data: {
       target: commentId
     }
@@ -33,17 +33,17 @@ export const getComments = params => {
  export const deleteCommentLike = commentId => {
   return request({
     method: 'DELETE',
-    url: `/app/v1_0/comment/likings/${commentId}`,
+    url: `/v1_0/comment/likings/${commentId}`,
   })
 }
 
 /**
  * 添加评论或评论回复
  */
- export const addComment = params => {
+ export const addComment = data => {
   return request({
     method: 'POST',
-    url: `/app/v1_0/comments`,
-    params
+    url: `/v1_0/comments`,
+    data
   })
 }

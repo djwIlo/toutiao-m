@@ -9,7 +9,7 @@ import request from '@/utils/request'
 export const getSearchSuggestions = q => {
   return request({
     method: 'GET',
-    url: '/app/v1_0/suggestion',
+    url: '/v1_0/suggestion',
     params: {
       q //联想建议关键词
     }
@@ -22,7 +22,7 @@ export const getSearchSuggestions = q => {
 export const getSearchResults = params => {
   return request({
     method: 'GET',
-    url: '/app/v1_0/search',
+    url: '/v1_0/search',
     params
   })
 }
@@ -33,6 +33,6 @@ export const getSearchResults = params => {
 export const getSearchHistorys = () => {
   return request({
     method: 'GET',
-    url: `/app/v1_0/search/histories`,
+    url: `/v1_0/search/histories`,
   })
 }

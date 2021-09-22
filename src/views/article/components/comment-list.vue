@@ -11,6 +11,7 @@
         v-for="(comment, index) in list"
         :key="index"
         :comment="comment"
+        @reply-click="$emit('reply-click', $event)"
       />
       <!-- <van-cell
         v-for="(comment, index) in list"
@@ -35,10 +36,22 @@ export default {
       type: [Number, Object, String],
       required: true,
     },
+    // 获取文章评论，使用字符 a
+    // 获取评论回复，使用字符 c
+    type: {
+      type: String,
+      default: 'a'
+    },
+    list: {
+      type: Array,
+      default() {
+        return []
+      }
+    }
   },
   data() {
     return {
-      list: [],
+      // list: [],
       loading: false,
       finished: false,
       offset: null, // 获取下一页数据的页码
@@ -49,50 +62,17 @@ export default {
     async onLoad() {
       // /1.请求获取数据
       const { data } = await getComments({
-        type: "a",
-        source: this.source,
+        type: this.type,
+        source: this.source.toString(),
         offset: this.offset,
         limit: this.limit,
       });
+      
+      this.$emit('update-total-count', data.data.total_count)
 
-      // console.log(data);
       //2.把数据放到列表中
       const { results } = data.data;
-      const yanlingji = [
-        {
-          aut_name: "焰灵姬",
-          content: "焰灵姬国漫第一美",
-          pubdate: "2021-07-16T23:10:58",
-          reply_count: 18,
-          like_count: 2,
-          is_liking: false,
-          com_id: {}
-        },
-        {
-          aut_name: "美杜莎",
-          content: "美杜莎女王，很霸气，萧炎竟然玩蛇，跟许仙比有过之而不及！",
-          pubdate: "2020-11-19T08:10:43",
-          reply_count: 25,
-          like_count: 1,
-          is_liking: false,
-          com_id: {}
-        },
-        {
-          aut_name: "删库跑路",
-          content: "人跟代码有一个能跑就行，想好了没谁先跑",
-          pubdate: "2020-07-15T14:16:22",
-          reply_count: 8,
-          like_count: 1,
-          is_liking: true,
-          com_id: {}
-        },
-      ];
-
-      if (!results.length) {
-        this.list.push(...yanlingji);
-      } else {
         this.list.push(...results);
-      }
 
       //3.将本次的1oading关闭
       this.loading = false;
